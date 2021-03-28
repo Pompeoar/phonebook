@@ -75,9 +75,10 @@ namespace Phonebook
         {
             var current = head;
             var depth = 0;
-            while(current.next != null && depth > skip)
+            while(current.next != null && depth < skip)
             {
                 current = current.next;
+                depth++;
             }
             return current;
         }

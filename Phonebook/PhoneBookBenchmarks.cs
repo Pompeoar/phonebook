@@ -40,7 +40,7 @@ namespace Phonebook
                 var record = faker.Generate();
                 await PhoneBook.AppendAsync(fileLocation, record.Name, record.Number);
             }
-            // factoring for both skip and test 
+            // marking for both skip and take 
             await PhoneBook.GetListAsync(fileLocation, recordsToCreate / 2, recordsToCreate);
         }
     }

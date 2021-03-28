@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace PhonebookTests
 {
@@ -59,12 +58,11 @@ namespace PhonebookTests
 
             // Act
             var actualList = await PhoneBook.GetListAsync(fileLocation, 0, recordsToCreate);
-            var sortedList = actualList.ToList().OrderBy(record => record.Name);
 
             // Assert
             actualList
                 .Should()
-                .Equal(sortedList);
+                .Equal(actualList.ToList().OrderBy(record => record.Name));
 
         }
 
@@ -114,8 +112,8 @@ namespace PhonebookTests
         [InlineData(10, 0, 1, 1)] // Return one record
         [InlineData(10, 0, 10, 10)] // return all records
         [InlineData(10, 0, 9, 9)] // return less than all records
-        [InlineData(20, 2, 9, 9)] // return skip and return take
-        [InlineData(3, 2, 9, 1)] // return skip and return with less than take available
+        [InlineData(20, 2, 9, 9)] // skip and return take
+        [InlineData(3, 2, 9, 1)] // skip and return with less than take available
         [InlineData(1, 2, 1, 1)] // returns take when skip exceeds count
         public async Task PhoneBookFile_SkipAndTake(
             int recordsToCreate,
