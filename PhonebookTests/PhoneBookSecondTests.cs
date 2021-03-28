@@ -45,6 +45,7 @@ namespace PhonebookTests
         [Theory]
         [InlineData(1)] // Can append one record with file missing
         [InlineData(2)] // Can append to existing record
+        [InlineData(10)] // Can append repeatedly
         public async Task PhoneBook_Append(int recordsToCreate)
         {
             // Arrange            
@@ -66,6 +67,32 @@ namespace PhonebookTests
             data
                 .Should()
                 .BeEquivalentTo(records.Select(record => $"{record.Name}\t{record.Number}"));
+        }
+
+        [Fact]
+        public async Task PhoneBook_AppendAlphabetically()
+        {
+            // Arrange            
+            var records = Enumerable.Range(0, 10)
+                .Select(i => fakerPhoneRecord.Generate())
+                .ToList();
+
+            // Act
+            foreach (var record in records)
+            {
+                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number);
+            }
+
+            // Assert
+            var data = await File.ReadAllLinesAsync(fileLocation);
+            data.Length
+                .Should()
+                .Be(recordsToCreate);
+            data
+                .Should()
+                .Equal(records
+                        .OrderBy(record => record.Name)
+                        .Select(record => $"{record.Name}\t{record.Number}"));
         }
     }
 }
