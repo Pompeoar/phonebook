@@ -1,37 +1,37 @@
-﻿using Iced.Intel;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Phonebook
 {
     public static class PhoneBookSecond
     {
+        /// <summary>
+        /// Appends the given name/number alphabetically.
+        /// </summary>
+        /// <param name="fileLocation"></param>
+        /// <param name="name"></param>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        /// <remarks>This keeps only the current read/write in memory.</remarks>
         public static async Task AppendAsync(string fileLocation, string name, string number)
         {
-            string temp = @"c:\Dev\temp.txt";
-            if (File.Exists(temp))
-            {
-                File.Delete(temp);
-            }
             if (!File.Exists(fileLocation))
             {
-                using StreamWriter file = new(fileLocation, append: true);
-                await file.WriteLineAsync($"{name}\t{number}");
+                using StreamWriter newFile = new(fileLocation, append: true);
+                await newFile.WriteLineAsync($"{name},{number}");
                 return;
             }
-            using StreamReader reader = new(fileLocation);
+            string temp = Path.GetRandomFileName();          
             using StreamWriter writer = new(temp, append: true);
+            using StreamReader reader = new(fileLocation);
             string line;
             bool stillSearching = true;
             while ((line = await reader.ReadLineAsync()) != null)
             {
                 if (stillSearching && name.CompareTo(line) < 0)
                 {
-                    await writer.WriteLineAsync($"{name}\t{number}");
+                    await writer.WriteLineAsync($"{name},{number}");
                     stillSearching = false;
                 }
                 await writer.WriteLineAsync(line);
@@ -39,7 +39,7 @@ namespace Phonebook
             reader.Dispose();
             writer.Dispose();
             RenameFile(fileLocation, temp);
-
+            File.Delete(temp);
         }
 
         private static void RenameFile(string fileLocation, string temp)

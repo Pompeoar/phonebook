@@ -66,7 +66,7 @@ namespace PhonebookTests
                 .Be(recordsToCreate);
             data
                 .Should()
-                .BeEquivalentTo(records.Select(record => $"{record.Name}\t{record.Number}"));
+                .BeEquivalentTo(records.Select(record => $"{record.Name},{record.Number}"));
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace PhonebookTests
                 .Should()
                 .Equal(records
                         .OrderBy(record => record.Name)
-                        .Select(record => $"{record.Name}\t{record.Number}"));
+                        .Select(record => $"{record.Name},{record.Number}"));
         }
 
 
@@ -128,12 +128,11 @@ namespace PhonebookTests
                 .HaveCount(expectedCount);
             records
                 .OrderBy(record => record.Name)
-                .Select(record => $"{record.Name}\t{record.Number}")
+                .Select(record => $"{record.Name},{record.Number}")
                 .Skip(skip)
                 .Take(take)
                 .Should()
-                .Equal(phoneRecords);
-            
+                .Equal(phoneRecords);            
         }
     }
 }
