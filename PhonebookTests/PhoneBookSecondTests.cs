@@ -42,26 +42,30 @@ namespace PhonebookTests
             }
         }
 
-        [Fact]
-        public async Task PhoneBook_Append()
+        [Theory]
+        [InlineData(1)] // Can append one record with file missing
+        [InlineData(2)] // Can append to existing record
+        public async Task PhoneBook_Append(int recordsToCreate)
         {
             // Arrange            
-            var record = fakerPhoneRecord.Generate();
+            var records = Enumerable.Range(0, recordsToCreate)
+                .Select(i => fakerPhoneRecord.Generate())
+                .ToList();            
 
-            // Act            
-            await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number);
+            // Act
+            foreach (var record in records)
+            {
+                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number);
+            }
 
             // Assert
             var data = await File.ReadAllLinesAsync(fileLocation);
             data.Length
                 .Should()
-                .Be(1);
-            data[0]
+                .Be(recordsToCreate);
+            data
                 .Should()
-                .Contain(record.Name)
-                .And
-                .Contain(record.Number);
-            
+                .BeEquivalentTo(records.Select(record => $"{record.Name}\t{record.Number}"));
         }
     }
 }
