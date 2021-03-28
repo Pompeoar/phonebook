@@ -29,7 +29,7 @@ namespace Phonebook
         }
 
         [Benchmark(Baseline = true)]
-        public async Task Phonebook_AppendAndGetList()
+        public async Task PhonebookWithLinkedList_Benchmark()
         {
             if (File.Exists(fileLocation))
             {
@@ -42,6 +42,22 @@ namespace Phonebook
             }
             // marking for both skip and take 
             await PhoneBookWithLinkedList.GetListAsync(fileLocation, recordsToCreate / 2, recordsToCreate);
+        }
+
+        [Benchmark]
+        public async Task PhonebookWithFileWriting_Benchmark()
+        {
+            if (File.Exists(fileLocation))
+            {
+                File.Delete(fileLocation);
+            }
+            for (int i = 0; i < recordsToCreate; i++)
+            {
+                var record = faker.Generate();
+                await PhoneBookWithFileWriting.AppendAsync(fileLocation, record.Name, record.Number);
+            }
+            // marking for both skip and take 
+            await PhoneBookWithFileWriting.GetListAsync(fileLocation, recordsToCreate / 2, recordsToCreate);
         }
     }
 }
