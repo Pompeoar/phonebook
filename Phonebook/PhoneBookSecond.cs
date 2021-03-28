@@ -31,6 +31,7 @@ namespace Phonebook
                 if (stillSearching && name.CompareTo(line) < 0)
                 {
                     await writer.WriteLineAsync($"{name}\t{number}");
+                    stillSearching = false;
                 }
                 await writer.WriteLineAsync(line);
             }
