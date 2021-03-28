@@ -10,14 +10,14 @@ using Xunit;
 
 namespace PhonebookTests
 {
-    public class PhoneBookSecondTests : IDisposable
+    public class PhoneBookWithFileWritingTests : IDisposable
     {
         Faker<PhoneRecord> fakerPhoneRecord;
         int seed = 123;
         int recordsToCreate = 10;
         string fileLocation = @"c:\dev\unit_test_phonebook.txt";
 
-        public PhoneBookSecondTests()
+        public PhoneBookWithFileWritingTests()
         {
             Randomizer.Seed = new Random(seed);
             fakerPhoneRecord = new Faker<PhoneRecord>()
@@ -55,7 +55,7 @@ namespace PhonebookTests
             // Act
             foreach (var record in records)
             {
-                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number).ConfigureAwait(false);
+                await PhoneBookWithFileWriting.AppendAsync(fileLocation, record.Name, record.Number).ConfigureAwait(false);
             }
 
             // Assert
@@ -79,7 +79,7 @@ namespace PhonebookTests
             // Act
             foreach (var record in records)
             {
-                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number);
+                await PhoneBookWithFileWriting.AppendAsync(fileLocation, record.Name, record.Number);
             }
 
             // Assert
@@ -115,11 +115,11 @@ namespace PhonebookTests
 
             foreach (var record in records)
             {
-                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number);
+                await PhoneBookWithFileWriting.AppendAsync(fileLocation, record.Name, record.Number);
             }
 
             // Act
-            IEnumerable<string> phoneRecords = await PhoneBookSecond.GetListAsync(fileLocation, skip, take);
+            IEnumerable<string> phoneRecords = await PhoneBookWithFileWriting.GetListAsync(fileLocation, skip, take);
 
             // Assert
             phoneRecords
@@ -142,11 +142,11 @@ namespace PhonebookTests
             for (int i = 0; i < recordsToCreate; i++)
             {
                 var record = fakerPhoneRecord.Generate();
-                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number).ConfigureAwait(false);
+                await PhoneBookWithFileWriting.AppendAsync(fileLocation, record.Name, record.Number).ConfigureAwait(false);
             }
 
             // Act
-            IEnumerable<string> phoneRecords = await PhoneBookSecond.GetListAsync(fileLocation, 0, recordsToCreate).ConfigureAwait(false);
+            IEnumerable<string> phoneRecords = await PhoneBookWithFileWriting.GetListAsync(fileLocation, 0, recordsToCreate).ConfigureAwait(false);
 
             // Assert
             phoneRecords

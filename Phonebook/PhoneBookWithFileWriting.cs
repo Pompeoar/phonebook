@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Phonebook
 {
-    public static class PhoneBookSecond
+    public static class PhoneBookWithFileWriting
     {
         /// <summary>
         /// Appends the given name/number alphabetically.

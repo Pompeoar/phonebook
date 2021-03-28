@@ -10,14 +10,14 @@ using Xunit;
 
 namespace PhonebookTests
 {
-    public class PhoneBookTests : IDisposable
+    public class PhoneBookWithLinkedListTests : IDisposable
     {
         Faker<PhoneRecord> fakerPhoneRecord;
         int seed = 123;
         int recordsToCreate = 10;
         string fileLocation = @"c:\dev\unit_test_phonebook.json";
 
-        public PhoneBookTests()
+        public PhoneBookWithLinkedListTests()
         {
             Randomizer.Seed = new Random(seed);
             fakerPhoneRecord = new Faker<PhoneRecord>()
@@ -36,7 +36,7 @@ namespace PhonebookTests
             var record = fakerPhoneRecord.Generate();
 
             // Act            
-            await PhoneBook.AppendAsync(fileLocation, record.Name, record.Number);
+            await PhoneBookWithLinkedList.AppendAsync(fileLocation, record.Name, record.Number);
 
             // Assert
             var json = File.ReadAllText(fileLocation);
@@ -53,11 +53,11 @@ namespace PhonebookTests
             for (int i = 0; i < recordsToCreate; i++)
             {
                 var record = fakerPhoneRecord.Generate();
-                await PhoneBook.AppendAsync(fileLocation, record.Name, record.Number);
+                await PhoneBookWithLinkedList.AppendAsync(fileLocation, record.Name, record.Number);
             }
 
             // Act
-            var actualList = await PhoneBook.GetListAsync(fileLocation, 0, recordsToCreate);
+            var actualList = await PhoneBookWithLinkedList.GetListAsync(fileLocation, 0, recordsToCreate);
 
             // Assert
             actualList
@@ -74,11 +74,11 @@ namespace PhonebookTests
             for (int i = 0; i < recordsToCreate; i++)
             {
                 var record = fakerPhoneRecord.Generate();
-                await PhoneBook.AppendAsync(fileLocation, record.Name, record.Number);
+                await PhoneBookWithLinkedList.AppendAsync(fileLocation, record.Name, record.Number);
             }
 
             // Act
-            var list = await PhoneBook.GetListAsync(fileLocation, 0, recordsToCreate);
+            var list = await PhoneBookWithLinkedList.GetListAsync(fileLocation, 0, recordsToCreate);
 
             // Assert
             list.Should()
@@ -95,11 +95,11 @@ namespace PhonebookTests
             for (int i = 0; i < recordsToCreate; i++)
             {
                 var record = fakerPhoneRecord.Generate();
-                await PhoneBook.AppendAsync(fileLocation, record.Name, record.Number);
+                await PhoneBookWithLinkedList.AppendAsync(fileLocation, record.Name, record.Number);
             }
 
             // Act
-            var list = await PhoneBook.GetListAsync(fileLocation, 0, recordsToCreate);
+            var list = await PhoneBookWithLinkedList.GetListAsync(fileLocation, 0, recordsToCreate);
 
             // Assert
             list.Should()
@@ -125,11 +125,11 @@ namespace PhonebookTests
             for (int i = 0; i < recordsToCreate; i++)
             {
                 var record = fakerPhoneRecord.Generate();
-                await PhoneBook.AppendAsync(fileLocation, record.Name, record.Number);
+                await PhoneBookWithLinkedList.AppendAsync(fileLocation, record.Name, record.Number);
             }
 
             // Act
-            var list = await PhoneBook.GetListAsync(fileLocation, skip, take);
+            var list = await PhoneBookWithLinkedList.GetListAsync(fileLocation, skip, take);
 
             // Assert
             list.ToList().Distinct()

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Phonebook
 {
     // Ultimately this cannot handle more than 64 Phone Records because of the serializer. 
-    public static class PhoneBook
+    public static class PhoneBookWithLinkedList
     {
         private static JsonSerializerOptions options = new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.Preserve, MaxDepth = 100};
         public static async Task AppendAsync(string fileLocation, string name, string number) =>

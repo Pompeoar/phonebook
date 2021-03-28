@@ -38,10 +38,10 @@ namespace Phonebook
             for (int i = 0; i < recordsToCreate; i++)
             {
                 var record = faker.Generate();
-                await PhoneBook.AppendAsync(fileLocation, record.Name, record.Number);
+                await PhoneBookWithLinkedList.AppendAsync(fileLocation, record.Name, record.Number);
             }
             // marking for both skip and take 
-            await PhoneBook.GetListAsync(fileLocation, recordsToCreate / 2, recordsToCreate);
+            await PhoneBookWithLinkedList.GetListAsync(fileLocation, recordsToCreate / 2, recordsToCreate);
         }
     }
 }
