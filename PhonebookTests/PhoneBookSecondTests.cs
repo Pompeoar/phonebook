@@ -51,12 +51,12 @@ namespace PhonebookTests
             // Arrange            
             var records = Enumerable.Range(0, recordsToCreate)
                 .Select(i => fakerPhoneRecord.Generate())
-                .ToList();            
+                .ToList();
 
             // Act
             foreach (var record in records)
             {
-                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number);
+                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number).ConfigureAwait(false);
             }
 
             // Assert
@@ -73,9 +73,9 @@ namespace PhonebookTests
         public async Task PhoneBook_AppendAlphabetically()
         {
             // Arrange            
-            var records = Enumerable.Range(0, 10)
+            var records = Enumerable.Range(0, recordsToCreate)
                 .Select(i => fakerPhoneRecord.Generate())
-                .ToList();
+                 .ToList();
 
             // Act
             foreach (var record in records)
@@ -93,6 +93,47 @@ namespace PhonebookTests
                 .Equal(records
                         .OrderBy(record => record.Name)
                         .Select(record => $"{record.Name}\t{record.Number}"));
+        }
+
+
+        [Theory]
+        [InlineData(10, 0, 1, 1)] // Return one record
+        [InlineData(10, 0, 10, 10)] // return all records
+        [InlineData(10, 0, 9, 9)] // return less than all records
+        [InlineData(20, 2, 9, 9)] // skip and return take
+        [InlineData(3, 0, 9, 3)] // take exceeds available, returns available
+        [InlineData(3, 2, 9, 1)] // skip, take exceeds available, returns available        
+        public async Task PhoneBook_GetList(
+            int recordsToCreate,
+            int skip,
+            int take,
+            int expectedCount)
+        {
+            // Arrange            
+            var records = Enumerable.Range(0, recordsToCreate)
+                .Select(i => fakerPhoneRecord.Generate())
+                 .ToList();
+
+            foreach (var record in records)
+            {
+                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number);
+            }
+
+            // Act
+            IEnumerable<string> phoneRecords = await PhoneBookSecond.GetListAsync(fileLocation, skip, take);
+
+            // Assert
+            phoneRecords
+                .Should()
+                .HaveCount(expectedCount);
+            records
+                .OrderBy(record => record.Name)
+                .Select(record => $"{record.Name}\t{record.Number}")
+                .Skip(skip)
+                .Take(take)
+                .Should()
+                .Equal(phoneRecords);
+            
         }
     }
 }

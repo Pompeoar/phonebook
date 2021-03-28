@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Iced.Intel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,27 @@ namespace Phonebook
         private static void RenameFile(string fileLocation, string temp)
         {
             File.Move(temp, fileLocation, overwrite: true);
+        }
+
+        public static async Task<IEnumerable<string>> GetListAsync(string fileLocation, int skip, int take)
+        {
+            var phoneRecords = new List<string>();
+            if (!File.Exists(fileLocation))
+            {
+                return phoneRecords;
+            }
+            using StreamReader reader = new(fileLocation);            
+            string line;
+            var index = 1;
+            while ((line = await reader.ReadLineAsync()) != null && phoneRecords.Count < take)
+            {
+                if (index > skip)
+                {
+                    phoneRecords.Add(line);
+                }                
+                index++;
+            }
+            return phoneRecords;            
         }
     }
 }
