@@ -18,33 +18,32 @@ namespace Phonebook
         {
             if (!File.Exists(fileLocation))
             {
-                using StreamWriter newFile = new(fileLocation, append: true);
-                await newFile.WriteLineAsync($"{name},{number}");
+                await CreateNewFile(fileLocation, name, number).ConfigureAwait(false);
                 return;
             }
-            string temp = Path.GetRandomFileName();          
+            string temp = Path.GetRandomFileName();
             using StreamWriter writer = new(temp, append: true);
             using StreamReader reader = new(fileLocation);
             string line;
             bool stillSearching = true;
-            while ((line = await reader.ReadLineAsync()) != null)
+            while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
                 if (stillSearching && name.CompareTo(line) < 0)
                 {
-                    await writer.WriteLineAsync($"{name},{number}");
+                    await writer.WriteLineAsync($"{name},{number}").ConfigureAwait(false);
                     stillSearching = false;
                 }
-                await writer.WriteLineAsync(line);
+                await writer.WriteLineAsync(line).ConfigureAwait(false);
             }
             reader.Dispose();
             writer.Dispose();
-            RenameFile(fileLocation, temp);
-            File.Delete(temp);
+            File.Move(temp, fileLocation, overwrite: true);
         }
 
-        private static void RenameFile(string fileLocation, string temp)
+        private static async Task CreateNewFile(string fileLocation, string name, string number)
         {
-            File.Move(temp, fileLocation, overwrite: true);
+            using StreamWriter writer = new(fileLocation, append: true);
+            await writer.WriteLineAsync($"{name},{number}").ConfigureAwait(false);
         }
 
         public static async Task<IEnumerable<string>> GetListAsync(string fileLocation, int skip, int take)
@@ -54,7 +53,7 @@ namespace Phonebook
             {
                 return phoneRecords;
             }
-            using StreamReader reader = new(fileLocation);            
+            using StreamReader reader = new(fileLocation);
             string line;
             var index = 1;
             while ((line = await reader.ReadLineAsync()) != null && phoneRecords.Count < take)
@@ -62,10 +61,10 @@ namespace Phonebook
                 if (index > skip)
                 {
                     phoneRecords.Add(line);
-                }                
+                }
                 index++;
             }
-            return phoneRecords;            
+            return phoneRecords;
         }
     }
 }

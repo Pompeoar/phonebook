@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -133,6 +132,27 @@ namespace PhonebookTests
                 .Take(take)
                 .Should()
                 .Equal(phoneRecords);            
+        }
+
+        [Fact]
+        public async Task PhoneBook_GetLargeList()
+        {
+            // Arrange            
+            var recordsToCreate = 100;
+            for (int i = 0; i < recordsToCreate; i++)
+            {
+                var record = fakerPhoneRecord.Generate();
+                await PhoneBookSecond.AppendAsync(fileLocation, record.Name, record.Number).ConfigureAwait(false);
+            }
+
+            // Act
+            IEnumerable<string> phoneRecords = await PhoneBookSecond.GetListAsync(fileLocation, 0, recordsToCreate).ConfigureAwait(false);
+
+            // Assert
+            phoneRecords
+                .Should()
+                .HaveCount(recordsToCreate);
+        
         }
     }
 }
