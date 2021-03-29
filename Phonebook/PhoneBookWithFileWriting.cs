@@ -35,6 +35,10 @@ namespace Phonebook
                 }
                 await writer.WriteLineAsync(line).ConfigureAwait(false);
             }
+            if (stillSearching)
+            {
+                await writer.WriteLineAsync($"{name},{number}").ConfigureAwait(false);
+            }
             reader.Dispose();
             writer.Dispose();
             File.Move(temp, fileLocation, overwrite: true);
