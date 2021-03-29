@@ -1,8 +1,8 @@
 ﻿namespace Phonebook
 {
-    public class PhoneRecord
+    public record PhoneRecord
     {
-        public string Name { get; set; }
-        public string Number { get; set; }      
+        public string Name { get; init; }
+        public string Number { get; init; }      
     }
 }
